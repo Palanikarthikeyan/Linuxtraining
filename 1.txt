@@ -1,0 +1,959 @@
+Linux Admin skills - commandline - 2 days
+
+Linux Shell script - 3 days
+      .............
+	variable
+	operators
+	conditional statements
+	looping statements
+	fileHandling
+	functions
+	external filters
+	Regx
+	sed
+	awk
+	Heredoc (or) lineoriented doc 
+---------------------------------------------
+ 
+OS - system software 
+     interface  to h/w
+
+  User Layer
+  ----------------------
+  OS Layer
+  ----------------------
+  H/W Layer
+
+Kernel - Core part of an OS
+
+Unix - is an OS
+----
+ |__AT&T - 1950...69..71/72 = Kernel + utilites(tools)
+
+GNU Project - 1982
+............
+
+Linux - kernel -->GNU - 1991/92  
+-----         
+
+dists - Kernel + utilites =>OS
+		 --------
+Ex: RedHat,Debian
+
+Unix/Linux - Kernel - abstraction of Kernel
+		      -----------
+			|__File,Process
+
+User
+ |
+ Kernel - File,Process
+ |
+ H/W
+
+command <== user ==>ex: date uname 
+-------
+ |_File,Process
+    |	   |
+ 
+File - Data - under the storage (ex: /bin/date)
+Process - Data - under the CPU
+			   ---
+			    ->fetch the data from memory
+			    ->stores to register
+			    ->execute //process
+
+root@host~]# gcc p1.c -o p1
+	     ---
+		
+root@host~]# python p1.py
+
+root@host~]# mysql -....
+
+
+root@host~]# command 
+ 
+
+File - Data under the storage
+
+file types
+-----------
+1.Reg.file
+	|__ASCII/TEXT	- content - user can able to read/understand
+	|__ELF (or) object - user can't able to understand
+
+ ex: vi p1.java vi p1.conf vi p1 
+     command >file
+     cp old newfile
+     ------------------------------//ASCII /TEXT
+
+ ex: os commands ;date;ls 
+
+
+ file - determine file type
+
+ file <filename>
+
+ file /etc/passwd -->ASCII/TEXT
+ 
+ file /bin/date -->ELF
+
+ file /var/log/boot.log ->ASCII/TEXT
+
+ 2. directory 
+
+ 3. link file (or) symlink (or) softlink - ln -s source target
+							------
+							  |__this is link file
+ 
+ 4. device files (/dev)
+    -------------
+	|__ a.Character type device - character by character;stream-bytes
+	|   (ex: keyboard,printer,terminal)
+        |
+	|__ b.Block type device - 1080KB - 1 block -buffer
+	    (ex: Harddisk,USB,CDROM)
+
+
+
+ 5. namedpipe (or) fifo 
+
+ 6. socket file 
+
+ -------------------------------------------------
+ 
+ 1.Reg.file
+ 2.directory
+ 3.special
+	|__link
+	|__device
+	|___named pipe
+	|__socket
+ 
+
+  file <filename>
+ ---------------------------------------------------------
+		
+  file structure
+  --------------		
+			/
+			|
+	-----------------------------------------------------------------
+	|	|	|	|	    |		|	|	|
+	/bin    /etc   /dev   /proc	   /root	/home	/var	...
+
+  /root/project/module1/module2/filename
+  /home/userA/dir1/dir2/filename
+  ------------------------------------------//absolutepath 
+  
+  ./filename
+ 
+  ../../filename
+  -------------------//Relative path
+
+ ---------------------------------------------------------------------------------
+  shell
+  ======
+ 
+  User
+  |<--- shell - interface btn user & kernel 
+  Kernel
+  |
+  H/W
+  
+ types of shell 
+ ----------------
+ 1.BourneShell(sh)  } AT&T
+ 2.Kornshell(ksh)   }
+ 3.CShell(csh) 
+
+ 4.BourneAgainSHell(bash) - default shell in Linux
+		     |_GNU
+
+ bash{Enter}
+ 
+ -------------------------------------------------------------------------------------
+  User
+   |
+  command( or) application
+   |
+  shell
+   ||
+   ||
+  Kernel
+   ||
+   H/W
+
+ Linux Kernel internal architecture
+ ------------------------------------
+      
+	
+  +---------------------------------------------------+
+	System Calls
+           |
+	FileSystem<---->PCB|IPC;SCHED;MM;Net |
+	   |
+	Device Drivers(.ko)
+	   |
+	Device Ctrler
+	   |
+ +----------------------------------------------------+
+         H/W
+
+
+
+  UserLayer: command ; application;echo "Hello" ; printf("Hello");print("Hello")
+	|	
+	shell			    --
+	|			    |
+	----------------	    |
+	systemCall()		   write("Hello")
+				   |
+				   my_write("Hello")
+				   |
+				   printk(Kernel_Flag,"Hello")
+				   |
+				   asm push 
+				       Call ...
+				   |
+				  01011010
+  
+   systemcall()=FD
+	
+  FD=0 <STDIN>
+  FD=1 STDOUT 
+  FD=2 STDERR
+  ---------------//std
+
+  FD=0x12435 - memory based call 
+
+  FD=3 to 2 power of 32/64 - Valid Call
+
+  FD=-1 <=== failed Call 
+
+  strace <command>
+  ...... 
+
+  strace date Vs strace cal  Vs strace yum .... Vs strace cat filename
+
+  functionCall()=FD
+		 --
+		  |__ -1
+ ----------------------------------------------------------------------------------------------------
+
+
+ OracleLinux - OL5/OL6/OL7/OL8
+ 
+  UBEK  
+  RedHat
+  Rescue
+ 
+ ----------------------------------------------------------------------------------------------------
+  
+ Linux Boot process
+ ------------------
+ OFF ->Switch on PC ->POST ->MasterBootRecord(MBR) ->Bootloader -->Kernel -->Process
+										|
+										systemprocess
+										|
+										getty(or)tty (systemprocess) //Login screen
+										|
+										shell
+										|
+									User I/O 
+										
+
+ bootloader
+ ----------
+ 1.LILO
+ 2.GRUB - OL5;OL6
+ 3.GRUB2 - OL[78]
+
+ grub							grub2
+ -----							-----
+ config file						shellscript file - preloaded kernel module
+ |							
+ slow							fast
+ we can edit boot menu/parms		Vs		we can't edit boot menu directly(boot file)
+ |							/boot/grub2/grub.cfg
+ boot params 						 		
+ |							/etc/default/grub - editable file
+ /boot/grub/grub.conf					|
+							grub2-mkconfig -o /boot/grub2/grub.cfg
+
+ ------------------------------------------------------------------------------------------------
+ Check your kernel name ->uname
+ kernel version ->uname -r
+ 
+ uname -a
+
+ 
+ dist realease -> cat /etc/oracle-release
+ 
+
+ root@host~]# uname 
+ 
+ whatis <command> - definition only
+ ......
+  |
+ man <command> 
+
+ /search
+ q <== press 'q' 
+ 
+ ls /boot
+
+ ls /boot
+ ls /boot/vm*
+
+ ls /boot/initram*
+
+ uname -r
+
+ cat /boot/grub2/grub2.cfg |less 
+
+ less - page view 
+ -----------------
+  |_Home End Pagup PageDown 
+
+ 
+
+ cat /boot/grub2/grub2.cfg |grep menu_entry
+
+ 
+ grep -i time /boot/grub2/grub2.cfg {enter}
+         ----
+	
+ TIMEOUT=5
+ 
+ cat /etc/default/grub 
+
+
+ vi /etc/default/grub{Enter}
+
+ GRUB_TIMEOUT=10
+
+ :wq
+
+ 
+ grep -i time /boot/grub2/grub2.cfg {enter}
+         ----
+  TIMEOUT=5 
+
+ grub2-mkconfig -o /boot/grub2/grub2.cfg
+  
+ 
+ grep -i time /boot/grub2/grub2.cfg {enter}
+         ----
+  TIMEOUT=10
+
+
+ ===================================================================================================
+
+  Process - Data - under the CPU
+  -------
+
+
+
+ OFF ->Switch on PC ->POST ->MasterBootRecord(MBR) ->Bootloader -->Kernel -->Process
+										|
+										systemprocess
+										|
+										getty(or)tty (systemprocess) //Login screen
+										|
+										shell (or) Desktop
+										|
+									User I/O: command  (or) GUI
+										(user process)
+			process(ps)
+			   |
+			   |
+	------------------------------------------------------
+	|						     |
+	User process					System process
+	
+	- by user					-by systemD
+	- tty:pts/<port> (or) tty<port>			-by TTY: ?
+
+ 	- parent is :working shell			- parent is systemD - PID:1
+	
+	- start ->R+  ->Exit				- start (during kernel booting time) ->R+
+		  ||    ----				  (background)
+		 stop
+							to ctrl (start;stop;restart;status)
+							this system process - systemctl
+
+								session leader(SID)
+
+  root@host~]# ssh host01 <== by user/userprocess - parent is working shell
+		|
+		|
+		sshd <== systemprocess - Running - parent is systemd
+
+
+
+  root@host~]# crontab -e <== by user 
+		|
+		crond <== system process
+
+	systemctl status crond.service
+					
+		(or)
+	systemctl status crond
+
+		
+	cgi -> http://... -> httpd
+		|
+		mysql ... -> mysqld
+
+		
+
+ PIDs:
+ 101    102	103	104	105	106	107	108	109	110
+ P1	P2	P3	P4	P5	P6	P7 	P8	P9	P10
+ -----------------      ==========      ===================      ----------
+ 	PGID:101	PGID:104	PGID:106		  PGID:109
+
+ PID PGID
+ 102  101
+ 101  101
+
+ session: collection of process group 
+ --------
+ P1 P4   P6  P9
+ 
+ SID:101
+
+  PID	PGID	SID
+  101  101	101
+  104	104	101
+  105	104	101
+
+
+  ps 
+  ps -j
+
+  ps -e (or) ps -A  - to get list of all the process
+
+  ps 
+  ps -l 
+  ps -f ->STIME PPID
+          -----
+
+  ps -el (or) ps -le
+
+  ps -elf (or) ps -lef 
+
+
+  ls -l
+  ls -r
+
+  ls -ltr
+
+  ls -r
+     -t
+     -l
+    ------//we can combine any combination order 
+
+  command -option
+		|--specific
+  
+  
+  top
+  htop
+ 
+
+  P1 - PID,PAddress,Pstate  
+	|	|			|->R+..
+	|	|			|
+  P1 : 101	0x1234 (parent) -R+ == Waiting	<-------
+  |		|		 |			|
+  P2 : 102	0x3455 (child)	 R+ -------- exit-----Exit Signal
+  
+  
+  root@host~]# _____ this is active/Running process
+		|
+		working shell
+
+  root@host~]# vi p1{enter}
+ 
+  |        vi  - active process |
+
+
+  P1 - Waiting <== killed by interrupt /signal
+  |
+  P2 - Running R+ -- Running 
+  --
+   |__orphan process - systemd act as a parent 
+
+  PID	PPID
+  102	101
+   ...
+  102	1
+
+
+  P1 - waiting
+  |
+  P2 -- Running -- Exit ---signal //block - Zombie 
+  	
+ ------------------------------------------------------------
+
+  command1;command2;command3
+	  |--------		
+	  |
+	 end of the command
+ 
+  date;whoami;uname
+
+  date;ping google.com;ls;ps
+  ---- ===============
+   
+
+  to transfer to background
+  ...........................
+
+   command &
+
+  [jobID]  <PID>
+    (or)
+   eventID
+  
+   date;ping google.com >/dev/null &;ls;ps
+	----------------------------
+
+  
+
+   jobs -r
+   jobs -s
+   jobs -p
+
+ -----------------------------------------------------------------------------------------------------
+ 
+ systemctl {Enter}
+
+
+  systemctl -t service 
+
+  systemctl status <daemon>
+
+  root user
+   -------
+	|->start;stop;restart
+	
+
+  root@host~]# systemctl start atd
+
+  root@host~]# systemctl stop atd
+
+  root@host~]# vi /etc/sysconfig/atd.conf ; vi /etc/systemd/system/atd.service ;
+		....
+   
+  root@host~]# systemctl restart atd
+  
+  root@host~]# systemctl status atd   ; student@host~]$ systemctl status atd
+
+ 
+  root@host~]# systemctl enable atd # os loading time - automatically will start 
+
+  root@host~]# systemctl disable atd 
+
+
+  config file
+  -------------
+   ini format   <=== Linux service file 
+   yaml format
+
+  /etc/systemd/system/sshd.service <=== File - ASCII/TEXT
+		      .............
+				|
+				|___ process - system process
+
+    [ID]
+    key=Value
+    key=value
+ ---------------------------------------------------------------------------------------------------
+ runlevel - target
+ 3 	  multi-user.target
+ 5	  graphical-user.target
+
+ --------------------------------------------------------------------------------------------------- 
+    
+
+systemctl {Enter}
+
+systemctl list-unit-files {Enter}
+
+systemctl list-units --type <UnitName>	
+			    service
+			    targets
+				
+	(or)
+systemctl -t <UnitName>
+systemctl -t service 
+
+----------------------------------------------
+systemctl get-default
+
+ls -l /etc/systemd/system/default.target 
+
+file /etc/systemd/system/default.target   
+
+==========================================================================
+  systemconfiguration
+  -------------------
+  /etc
+
+
+  filesystem - kernel internal - datastructure  - kernel layer
+
+  directory - folder  - user layer
+ 
+
+	/ <== directory view 
+ --------------------------------------------------------------------
+	systemCall
+	|
+  ---------------------------------
+   proc     ext4;xfs;btrfs
+    |	    |	  |
+    |       |     nfs    iso9660    -  FileSystem
+    |	    |     |	  |
+  ------------------------------------
+       DD
+       |
+       DC
+	|
+   ----------------------------------
+   CPU  RAM  HD	  NIC    USB 
+
+
+
+
+
+  ext3 -j ->ext4			xfs
+  						
+		[][][][] (j)	Vs	[][][][]j
+		[][][][]		[][][][]j
+		[][][][]		[][][][]j
+
+	 	OL6 - default ext4	OL[78] - xfs
+
+
+
+
+ 
+   /proc/sys/kernel/hostname
+   --------- ======
+
+   /proc/sys/net
+            /mem
+	    /fs
+		   /...
+
+  sysctl -a 
+  	  |_all 
+
+  
+  echo "value" >/proc/sys/kernel/shmall	e
+	(or)
+
+  sysctl -w kernel.shmall=value
+
+  /etc  Vs  /proc
+    |		|
+  xfs         proc
+    |           |
+  HardDisk    processor 
+
+ current state of kernel details - explore /proc 
+
+ to modify kernel params - echo "updated_value" >/proc/sys/....
+		(or)
+	
+	sysctl -w subdir1.subdir2.file=Updated_Value
+  # reboot not -required
+
+ 
+ vi /etc/sysctl.conf 
+ ....
+ ....
+ subdir1.subdir2.file=UpdatedValue
+
+ :wq
+ reboot
+
+
+ ---------------------------------------------------------------------------------------
+
+ ls /etc
+
+ ls /proc  
+    
+ ls -ldh /etc   Vs   ls -ldh /proc
+
+
+ sleep 60 &
+ [] <PID>
+
+ ls /proc {Enter}
+
+ 
+ <PID>
+
+ cat /proc/<PID>/maps  (or) pmap <PID>
+
+ ping -c 15 google.com >/dev/null &
+
+ <PID> 
+
+ cat /etc/hostname Vs cat /proc/sys/kernel/hostname
+
+ echo "hostnameA" >/etc/hostname
+ hostname
+ 
+ echo "hostnameB" >/proc/sys/kernel/hostname
+
+ hostname{enter}
+ hostnameB 		
+
+ sysctl -a|grep hostname
+ sysctl -a|less
+ sysctl -a|grep net
+
+ cat /proc/sys/net/sub1/sub2/file
+
+ sysctl -w kernel.sub1.sub2=UpdatedValue
+
+ cat /proc/sys/kernel/sub1/sub2 
+ 
+ # get cpu info  ---> cat /proc/cpuinfo |less
+ # get memory info  -> cat /proc/meminfo | less
+			
+ # get swap space --> cat /proc/meminfo|grep -i swap 
+ #
+ # 
+ 
+ ###################################################################################################
+
+ automatic job scheduling
+ -------------------------- 
+ 1. at command 		- atd.service
+ 2. cron command	- crond.service <==
+
+
+ at
+ --
+  |->single job scheduling ; onetime job scheduling
+
+ at 18:00
+ 
+ at now +2minutes
+    ---
+			/
+			|
+		--------------------
+		|		   |
+		|		  /home
+		/root		    |
+				    |
+				    |
+			---------------------------
+			|	|	|	  |
+		 	student vijay  arun	 anu
+			
+ root user and non-root - can perform - at tasks
+	       --------
+		|_student@host~]$ at 18:00
+				  ps -e >~/result.log    
+				 press ctrl+d 
+  
+
+  /etc/at.deny <==file
+  
+root@host~]# vi /etc/at.deny
+ 	     student
+	      :wq
+
+ root@host~]# 			student@host~]$ at 18:00	anu@host~]$ at 18:00
+				permission denied 		at>
+
+  
+ 
+								
+
+ 2. crontab -e
+
+ 
+  mins	hour	dom  month dow <userName>  <command>
+						
+ 10th june @8:30am backup_script.sh
+
+ crontab -e {enter}
+
+ 30  08  10  06  * <user>  /bin/bash /root/project/backup_script.sh  
+	     jun  
+	  
+ 
+  / - step 
+
+ */2 - every 2mins
+
+     */2 - ever 2hour
+
+   09,18	mon,fri
+
+   09-18	mon-fri
+
+  *
+  ,
+  - 
+  /
+   
+ crontab -e
+
+  @daily
+  @hourly  <command> >>/var/log/r1.log
+  @weekly
+  @monthly
+  @yearly
+  @reboot  <command>  >>/var/log/r1.log
+  ------   =========  -- ----------------
+  |
+  |
+  /etc/cron.d/
+  			
+		  
+ 
+
+   > - create/write
+
+   >> - append 
+
+
+  root@host~]# uname
+  Linux
+  root@host~]# ls
+
+  root@host~]# uname >r1.log 
+  		      -------
+			|__let assume file r1.log is not exists
+  root@host~]# ls
+  r1.log
+
+  root@host~]# cat r1.log
+  Linux
+  
+  root@host~]# whoami >r1.log <== the file r1.log is already exists
+		      -------
+			  |-- overwrite the existing content
+  root@host~]# ls
+  r1.log
+     
+  root@host~]# cat r1.log
+  root
+ 
+  root@host~]# date >>r1.log
+		    ---------//append - adding data to an existing file at the end
+			|
+			won't overwrite exisitng content
+
+
+
+ 
+  cd /etc/cron.d/cron.hourly
+
+  vi f1
+  (command;command) >>/tmp/r1.log
+ 
+  :wq
+  chmod a+x f1 (or) chmod 777 f1
+ 
+ -----------------------------------------------------------------------------------------------
+  
+								
+   User 
+
+  +---------------------------------------------------+
+	System Calls
+           |
+    ..............................................
+	FileSystem<---->PCB|IPC;SCHED;MM;Net |
+	   |
+	Device Drivers(.ko)
+	   |
+    ..............................................
+	Device Ctrler
+	   |
+ +----------------------------------------------------+
+         H/W 
+
+ module - file 
+
+ file:p1.c - source file
+ ----  |
+      gcc p1.c -o p1
+		  --
+		   |-->executable object file (ELF)
+
+      p1.ko
+	 ---
+
+     gcc -c p1.c 
+     make
+     ...
+
+     p1.ko   Vs p1
+     ELF	ELF
+     |		 |__executable file - running
+     relocatable
+     (loadable)
+	|
+	|__ load a file; unload a file
+	    -----------  --------------
+  LKM
+ Device Driver - developer
+  DD -> insmod /root/project/module/p1.ko
+				    ------
+					|__pa.ko
+					|__pb.ko
+
+        rmmod p1.ko
+
+ lsmod  - list out loaded kernel module
+
+ <module>  <modulesize>  <no.of process used by this module>  <dependent_Module>
+ 
+ 
+ admin
+ ------
+ modprobe <modulenameOnly> # extension is not required
+ 
+ load
+  ----
+ ex: modprobe nfs
+     modprobe bluetooth
+	
+     lsmod|grep nfs
+     lsmod|grep bluetooth
+
+  unload 
+  ------
+	modprobe -r nfs
+
+ play:
+    
+   DD
+ ---------
+    |_h/w 
+
+ modulename: nfs
+ -------------------
+ lsmod {Enter}
+ lsmod|grep bluetooth
+
+ modinfo <modulename>
+
+ modprobe -v nfs
+ modprobe -rv nfs
+ 
+ modprobe -n <module>
+------------------------------------------------------------------------------
