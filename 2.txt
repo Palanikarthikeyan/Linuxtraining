@@ -1,0 +1,494 @@
+ 
+
+
+
+ IP: ....
+ 
+ Login: vncuser
+
+ password: vnctech
+ 
+
+ xen - micro kernel 
+ |
+ hypervisor
+
+ Type 1  - xen
+
+ Type 2  - vmware,virtualbox
+
+
+
+ Type 1 :  Guest OS
+	    |
+	   Hypervisor(xen)
+	    |
+	   H/W
+
+ 
+ Type 2:  Guest OS
+	  |
+	 Real OS
+	  |
+         H/W	
+
+ xen ->xend
+
+ admin commands -> xm
+ |
+ on the dom0 - we can use xen commands
+	
+
+  vncuser@host~]$ su -
+  password: OU99444832
+
+  (current) .. :OU99444832
+
+  new password:....
+  confirm password:...
+
+
+  vncuser@host~]$ su -
+  password: <yourpassword>
+ 
+ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
+  root@host~]# 	passwd 
+  New password	 
+ 
+ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+  root@host~]# xm list
+	       -- ----
+  host01 - root - oracle
+  host02 - root - oracle
+		  |
+		 password
+
+  xm list -l host01 |grep location
+
+  (0.0.0.0:5902) host01
+
+  
+  boot partition - /boot - 512MB
+
+  / partition -   /  - 6GB
+ 
+  swap partition  -   3.5GB
+  --------------------------------------
+  /home (or) /var - 2GB <== optional
+
+
+
+ ssh <remotesystem>	
+
+ df {Enter}
+
+ /dev/sda1
+ /dev/sdb1
+ /dev/sdd1
+ /dev/hda1
+ -----------//real disk
+
+
+ /dev/mapper - LVM  =>lvs pvs vgs //commands 
+ 
+ 
+ /dev/xvda1
+ /dev/xvdb1
+ ---------------//virtual disk 
+
+ /dev/md0 <== RAID    
+ 
+-------------------------------------------------------------------------------------------------
+
+ wget https://......<package>....rpm 
+
+ root@host~]# cd Downloads
+ root@host Downloads]# rpm -ivh <package>...rpm
+			   ---- ================
+  
+ root@host~]# rpm -ivh /root/Downloads/<packagename>....rpm
+
+			pa
+			 |_px
+			    |__py
+				|__pz
+
+	rpm -q <packagename>
+	
+	rpm -qi <package>
+	    ---
+	     |_Query information
+
+        rpm -ql <..>
+
+	rpm -qa 
+		
+ 
+ root@host~]# ls 
+  
+ # empty directory
+ 
+ root@host~]# rpm -ivh /root/Downloads/ksh-version-release-arch.rpm  
+		
+			Vs
+
+ root@host~]# yum install ksh
+		|
+		|
+		/etc/yum.repo.d/filename.repo
+				--------------
+					|
+					config file - 1.ini 2.yaml
+						      ===== 
+					 |
+					ini format(key=Value)//format
+
+		[reporID]
+		name=
+		baseurl=
+		enabled=1     1<== repo is enabled ; 0<== repo is disabled 
+		gpgkey=file:/
+		gpgcheck=1 
+ 
+ root@host~]# python ->python 2.x 
+
+	      python3 ->python 3.x
+
+
+ /usr/bin/python	
+ /usr/bin/python3
+ 
+
+ -------------------
+  m/c offline
+  ---
+
+  yum install <package>
+   |
+   |
+   |__/etc/yum.repo.d/public...repo
+			|
+			enabled=1 - system is not connected with internet
+	 
+    error 
+ 
+==================================================================================================
+  -> create own repository/local repo
+
+  -> collect all rpm files
+		----------
+		 |
+		 |__OS.img / Packages/list of rpm files
+		
+		
+  -> create a own repo file (or) add new repo ID to an existing file
+			|
+		filename.repo
+
+  -> disable public repo  => enabled=1 ->enabled=0
+
+  -> yum clean all
+
+  -> yum repolist 
+
+  		
+
+
+		[monitoring tools]	wget http://..rpm - 100rpms 
+					|
+			tool1		|
+			...		<Dir>/...
+			tooln
+	
+		createrepo 	<Dir>
+				|
+				pwd ->update ->repo file	
+		
+  
+
+
+
+-----------------------------------------------------------------------------------------------
+Local repo
+==========
+
+  step 1: mount iso image - (host02 - already is mounted) # check with df command
+	  
+  step 2: cd iso image mount point directory
+  		
+	ex: cd /run/media/oracle/ {enter}
+
+  step 3: create repository
+
+	createrepo -v .
+
+  step 4: copy RPM-GPG-KEY from iso image (ex: cp /run/media/oracle/OL7.5../RPM-GPG-KEY .)
+	
+  step 5: rpm --import RPM-GRP-KEY
+
+  step 6: go to yum repo directory
+	
+	  cd /etc/yum.repo.d/
+		
+  step 7: disable existing public repo
+	 
+	  vi /etc/yum.repo.d/public-yum-ol7.repo
+
+	  enabled=1 -->enabled=0
+
+ step 8: create a new repo file (or) append to an existing file
+	
+	 vi /etc/yum.repo.d/myfile.repo
+
+	 [repoID]	
+	 name=<NAME OF THE REPOSITORY>
+	 baseurl=file:///run/media/oracle
+	 enabled=1
+ 	 gpgkey=file:///run/media/oracle/RPM-GPG-KEY
+	 gpgcheck=1
+
+	 :wq
+
+ step 9: clean all the cache -> yum clean all
+ 
+ step 10: test repo => yum repolist {Enter}
+                      
+			NAME OF THE REPOSITORY //done
+
+
+ ----
+ yum list
+ yum list installed
+ yum list avaiable
+
+ yum install zsh
+ yum install <package>
+
+ yum -y install ksh
+
+ -------------------------------------------------------------------------------------------------
+  package -> install -> running 
+			    ....//error	
+				   |
+				   |
+	-----------<--------------
+   |
+   [  ]-updated ==patching===== ....
+
+ bash-4.2.el2.3.86_64.rpm	================================ bash-4.2.el2.3.86_64
+  |
+  |
+ bash-4.2.el2.4.86_54.rpm
+	     ----
+	
+
+   |
+  Kernel  
+   |
+ 
+  [ Oracle Linux ] ------------->------------------[ Client : Bank ]
+     				 				|__appln....R+
+ 
+  package-version-release.arch.rpm
+		    |
+		  ------
+		  |     |
+		  	<PatchNumber>
+
+ 
+  Ksplice - downtime zero
+     	|
+ 	CSI :
+
+    [   ]  [   ]   Vs	   [    ]
+			     |
+			     |
+			[ ] [ ] [ ] [ ]	
+
+ 		
+	 
+---------------------------------------------------------------------------------------------------
+ Network configuration
+
+  1. Network configuration file - systemctl restart network
+
+  2. NetworkManager  (GUI)  - systemctl restart NetworkManager
+
+  3. Network TUI (GUI)  - systemctl restart NetworkManager
+ 
+  4. nmcli - service restart is not required
+     .....
+ 
+
+
+  
+  1. Network configuration file - systemctl restart network
+
+   /etc/sysconfig/network-scripts/ifcfg-<interfaceName> - system network details
+				  =======================
+
+   ex: eth0
+
+
+   vi /etc/sysconfig/network-scripts/ifcfg-eth0 {enter}
+
+	
+   :wq
+
+   systemctl restart network
+   ip addr
+
+   ifconfig
+   
+
+  2. remote m/c IP details 
+	
+     /etc/hosts		 
+	ping <remoteIP>
+	
+	<IPAddress>	<FQDN>	 			<alias>
+	10.20.30.40	host01.example.com		host01
+
+	ssh 10.20.30.40  (or) ssh host01.example.com  (or) ssh host01
+
+	ping 10.20.30.40  (or) ping host01.example.com (or) ping host01
+
+  
+  3. /etc/nsswitch.conf
+
+  4. /etc/resolv.conf - by NetworkManager 
+
+
+  5. /etc/hostname - hostname 
+
+   -----------------------------------------------------------------------------------------------
+	
+   
+  nmcli
+
+  nmcli - list of objects
+
+
+
+  nmcli --help # get list of object details
+
+  nmcli general --help # list of commands 
+
+ 
+  nmcli general status --help  # command example/description/definition
+
+
+   -------------------------------------------------------------------------------------------
+ 
+  security admin
+  --------------
+  1. chroot 
+  -------------
+
+  2. tcpwrapper
+ ---------------
+
+  3. iptables
+ ---------------
+
+  4. firewalld
+ ---------------
+
+
+ chroot - command - unnamed path
+		    ------------
+			|
+			not real /
+
+ date 
+ uname
+ cal
+ command 
+ ---------
+	|
+	/
+	|__/bin (or) /usr/bin
+	   |	     |
+	   |	     |
+	  change the / path => jail directory
+				|
+				
+
+		[OL7]	[OL8]	[OL5]	[OL6]
+		
+				<build>  <confi>
+
+		chroot ------------------[ol6]
+					  ....
+		
+
+		chroot --------[OL5]
+				build activity only
+
+
+	copy working shell bin to jail directory
+	|   ---------------
+	chroot jail path
+	 |
+	
+ Linux - command
+	   |
+	 File,Process
+		|
+		|
+	.so (shared object) - like winx .dll
+	---
+
+	/bin/date - .so
+
+	/bin/gcc  - .so
+
+	/bin/bash - .so
+		   ------
+		
+ 	ldd command - list of .so files
+
+	
+
+ tcpwrapper
+  |
+  hosts.deny
+
+  <service>:<client> <args>
+
+ sshd,cups,mysqld: 10.20.30.40       date echo "....." >>/var/log/alert.log
+		   host01.example.com
+		
+	
+  iptables
+	|
+	collection of table(s)
+			|
+			collection of chain(s)
+					|
+					Collection of Rule(s)
+   
+	|_Tables - Chain - Rule
+	   |	
+	  Filter - allow/block	- INPUT,FORWARD,OUTPUT
+
+	  NAT    -  public <-->private - PREROUTING,POSTROUTING,OUTPUT
+
+	  MANGLE - packet header;ipheader - PREROUTING,OUTPUT,INPUT,POSTROUTING,FORWARD
+
+
+
+ iptables INPUT -s 10.20.30.40 -j DROP
+
+ iptables OUTPUT -p ... 
+
+ OL[56]
+
+ |_ systemctl stop firewalld
+
+    systemctl start iptables
+    ..
+
+
+ ###################################################################################################
