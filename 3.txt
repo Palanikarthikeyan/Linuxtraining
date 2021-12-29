@@ -1,0 +1,969 @@
+ 
+ Recap
+ =====
+  
+ -> Day1 
+    ====
+    Linux architecture
+    abstraction of linux(file,process)
+	
+    file,file types,structure
+    process - user process vs system process
+		
+    Linux bootloader 
+    grub Vs grub2
+    
+    systemD - systemctl
+	  
+     |__.service
+	.target
+	
+    /etc Vs /proc
+		
+ -> Day2
+    ====
+    package management 
+      rpm Vs yum
+	
+    network configuration
+      |
+     config files (or) NetworkManager (or) nmcli (or) tui 
+    
+    firewalld - iptables - chroot - hosts.deny
+	
+     cron 
+ 
+
+  -> Day3
+     =====
+	|
+	shell script
+	----- ======
+	 |	|__program
+	 |	   ........
+	interface btn user and kernel 
+
+	=>Linux commandline oriented script
+	  ------------------
+
+ yum -y install httpd
+ 
+ vi /etc/httpd/httpd.conf
+  ..
+ :wq
+
+ vi /etc/systemd/system/httpd.service
+ [   ]
+
+ :wq
+
+ systemctl enable httpd
+ systemctl start httpd
+  
+ ...
+ 
+ Linux commandline structure
+ ----------------------------
+ 1. Command only - ex: date ls ps whoami echo
+
+ 2. command with argument - ex: date +%D ls -l file1 file2 
+				echo welcome to linux
+				echo "welcome to linux"
+
+   yum -y install gcc
+   --- == ======= ===
+   
+   useradd <username>
+   -------
+ 
+ 3. Command with `command` <== backquote `` <== this is not single quote
+		 ---------
+	|
+	(or)
+  
+   command $(command)
+
+  echo "Today:`date +%D`"
+    (or)
+
+  echo "Today:$(date +%D)"
+
+ 
+ shellScript
+ -----------
+	|__Variable
+		|_a. User defined variable
+		  b. shell variable (or) builtin variable (or) env variable (or) exported variable
+		  c. commandline argument
+		  d. Array
+
+	|__Operators
+		 a. arithmetic
+		 b. relational
+		 c. logical
+		 d. file test - file Types;mode
+	|__ Conditional statement - Test (or) Validation
+		a. if 
+		b. case
+
+	|__ Looping statements 
+		a. Conditional style 
+		b. Collection style
+	
+	|__ FileHandling 
+
+	|__ Function - reusability
+		|
+		|_Simple functionCall
+		|_nestedCall
+		|_Call with arguments
+		|_scope of datamember	
+		|_loadable
+
+		+
+	  Filters - grep;find;sort;cut;paste;tr;comm;diff;tee //commandline based 
+		|
+		Regx 
+		|
+		sed;awk
+
+	  Heredoc (or) LineOriented doc 
+		
+     
+ ----------------------------------------------------------------------------------
+ #!/bin/bash
+
+ #!/bin/sh
+
+ #!/bin/ksh
+
+ --------------//shabang 
+
+
+ userA@host01~]$ uname			userB@host02~]$ uname
+ Linux					aix
+
+ userA@host01~]$ ps			userB@host02~]$ ps
+		bash					csh
+
+ userA@host01~]$ vi p1.sh		userB@host02~]$ ./p1.sh
+ echo "ONE"				ONE
+ ...					...Error 
+ ...
+ echo "End"
+
+ :wq
+
+ userA@host01~]$ chmod a+x p1.sh
+ 
+ 
+ userA@host01~]$ /home/userA/p1.sh  (or) ./p1.sh
+ ...
+ Running - Success
+ 
+
+ ----------------------------------------------------------
+
+ userB@host02~]$ working shell is csh
+ userB@host02~]$ bash - subshell
+		 |
+		....
+		....//execute script
+
+	csh - wait
+	|
+	bash ...... R+
+ 
+ --------------------------------------------------------
+ file - (F)
+	 |__by 3 users
+
+	 1.user (or) owner (or) author (u)
+	 2.group (g)
+	 3.others(o)
+
+	read(r) write(w)  execute(x)
+	
+	rwxrwxrwx
+	
+ 	rwxrw-r--
+
+ sales		hr		prod <==group		: groupadd <groupName>
+  
+ arun		leo		shiv
+ vijay		anu		bibu
+
+
+ arun@host~]$ vi p1.txt
+		 |
+		 |__user is arun
+		 |__vijay is group member
+		 |__leo,shiv is other
+
+ chmod userdetails + mode filename(s)
+	|	   -  |  
+	ugo	      rwx
+
+	chmod u+x p1.sh
+	      
+	chmod ug+x p1.sh
+
+	chmod ugo+x p1.sh (or) chmod a+x p1.sh (or) chmod +x p1.sh //same 
+
+	4	2	1
+	r	w	x
+	1	1	1	- 7	->rwx
+	1	1	0	- 6	->rw-
+	1	0	1	- 5	->r-x
+	1	0	0	- 4	->r--
+
+
+	chmod 765 p1.sh
+	      |||
+	      ||r-x
+	      |rw-
+	     rwx
+
+	
+ ---------------------------------------------------------------------------------------
+
+	[host02]	[host03]	[host04]
+	|		|		|
+	Linux		sunos		aix
+	bash		ksh		csh
+
+ 
+
+ from host01
+	|
+	bash
+	|
+	p1.sh
+
+
+ #!/bin/bash
+	
+ echo $0
+      ---
+	|__specialvariable - active/running/working shell name
+
+ 
+   
+--------------------------------------------------------------------------------------------------
+ shelelscript supports 
+------------------------
+  |_ single line comment #
+
+  |__ multiline comment <<Flag
+		   Flag
+
+
+  
+
+ Write a shell script
+ ---------------------
+ 
+  step 1: create a newfile (p1.sh) vi p1.sh{Enter} 
+  
+  step 2: using command with `command` style
+				
+	display following system information
+
+		working kernel name and version
+
+		(ex: myworking kernel name is:Linux  Version is:2.6)
+
+		
+		working directory path
+		
+		login name and login ID
+	
+		total no.of process( ps -e|wc -l)
+
+   step 3: give execute permission to file(p1.sh)
+
+   step 4: Run a file( absolutepath/relativepath )
+	
+   step 5: redirect execution result to external file (ex: ./p1.sh >result.txt)
+
+  ----------------------------------------------------------------------
+
+  multiline statement
+  -------------------
+ root@host~]# <== this is primary prompt
+
+ root@host~]# echo "line1{Enter}
+ >line2{enter}
+ >line3{enter}
+ >line4"{enter}
+ |
+ |__secondary prompt 
+
+ echo -e "Linux\nSunos\tUnix\nwinx"
+
+--------------------------------------------------------------------------------------------------------
+ new to programming/script
+ ==========================
+
+ step 1: understand the topic definition
+ step 2: understand topic syntax (rule)
+ step 3: refer an existing example
+  |
+ step 4: exercise 
+
+ variable
+ ---------
+  |
+ shell script is dynamic type language - there is no primitive keywords(int,float,str)
+ variable is a namespace (or) placeholder (or) label
+	|
+	|__ holding a value
+
+ Syntax:-
+ --------
+
+ variableName=Value
+
+ variablename - starts with A-Za-z_ ; not starts with digits
+		not allows space and specialchar
+		there is no space in = LHS,RHS
+		
+
+  fname="/etc/passwd"	fname | /etc/passwd | 0x1234
+
+  IP="10.20.30.40"
+
+  pkg="httpd"
+
+  count=56
+
+  LB=1.23
+  
+  v1=100 # valid
+
+  1v=100 # invalid
+  $fname="p1.log" # invalid
+
+   fname lname="leo paul" # invalid
+	
+
+  var= 100 # invalid
+  
+  var =100 # invalid
+
+  var = 100 # invalid
+  
+  
+  $variable - value
+
+  echo "filename is:$fname" # filename is:/etc/passwd
+
+  echo "$v1" # 100
+
+  echo "$FNAME" ->Empty string 
+
+ 
+ Write a shellscript 
+ 
+ step 1: declare and initialize (variable=value) about filesystem details
+
+	 (filesystem type,filemount,filesize,permission)
+
+ step 2: using echo command - display filesystem details line by line
+	
+ Note: use single echo 
+ ----
+
+ ftype="ext4"
+ fmount="/D1"
+ ...
+ ...
+ 
+
+ command `command` (or) command $(command)
+
+
+ variable=`command`
+	   .......
+		|
+		executed command result
+ 
+						
+ Keyboard(STDIN)----<--read---------script-------->---echo-----------Monitor(STDOUT)
+
+ Syntax:-
+ --------
+ read<Space>UDV
+o
+
+ fname="/etc/passwd" 
+
+ read fname # interface to <STDIN>
+ 
+ echo "Filename:$fname" # display to monitor
+
+ 
+
+ read -p "promptmessage"<Space>UDV
+  |
+  |__ display promptmessage to monitor
+  |
+  |__ interface to <STDIN>
+
+ 
+ echo "Enter a partition name:"		read -p "Enter a partition name:" p1
+ read p1			  Vs
+ 
+ 
+ write a shellscript 
+
+ read a service name
+ display service is active or not
+			
+ display service emstatus
+
+
+ root@host~]# env{enter}
+
+
+
+
+
+
+
+ DB="/usr/bin/oracle/bin/file"
+
+ |
+ echo $DB
+
+ UDV ->Shell variable
+  
+  export UDV=Value
+
+  (or)
+  UDV=Value
+  export UDV
+
+
+ ------------------------------------------------------------------------------------------------------
+ operators
+ ---------
+ arithmetic operation
+ ----------------------
+ 1. expr command 
+    -----------
+
+    expr<space>Expression
+	       ----------
+		  |
+	       Operand<space>Operator<Space>Operand
+
+
+    expr 10 + 20
+
+    va=15
+    vb=25
+
+    expr $va + $vb
+
+
+ 2. compound style
+    ===============
+
+   $((expression)) - this not a command
+
+
+  echo "Total $((10+20))"  -> Total 30  Vs  echo "Total `expr 10 + 20`"  -> Total 30
+
+ 
+ ------------------------------------------------------------------------------------
+
+ special variables
+
+ in commandline 
+ ---------------
+    |
+   $$ - working shell PID 
+
+   $0 - working shell name
+
+   $? - last command operation exit code
+   --
+   |__ 0 - validcommand   Vs   1 2 126 127 non-zero - command operation is failed
+
+
+   command1
+   command2
+   echo $? -- display command2 exit status code
+  
+ -----------------------------------------------------------------------------------------------------
+
+ bash -x p1.sh
+
+ + <== debugging prompt
+
+ 
+  
+ Write a shellscript
+
+ step 1: read a partition name from <STDIN>	
+	 read a input-partition Size from <STDIN>
+
+ step 2: read a another partition name from <STDIN>
+	 read a input-partition Size from <STDIN>
+
+ step 3: using expr - calculate sum disk size
+
+ step 4: using echo - display input details and total partition size
+
+
+	
+ o/p :-
+ ======
+
+ Enter a partition name:/dev/xvdb1
+ Enter /dev/xvdb1 partition size:120
+
+ Enter a another partition name:/dev/xvdb2
+ Enter /dev/xvdb2 partition size:250
+
+ partition name: /dev/xvdb1	Size:120GB
+ partition name: /dev/xvdb2	Size:250GB
+--------------------------------------------
+		Total 	Size:	     270GB
+ ------------------------------------------
+ 
+				
+ 
+ Relational operators
+ --------------------
+          |
+	  |
+ ----------------------
+ |		      |
+ str		     number 0-9
+ "a-zA-Z0-9"
+
+ == !=		     -eq -ne -lt -le -gt -ge
+
+ test operator  (or) [   ]
+ ----		     -----
+
+ Syntax:-
+ --------
+ test<space>Expression  (or)  [<space>Expression<space>]
+
+
+ expr<space>Expression
+
+ expr  10 + 20
+ |
+ test  10 -eq 20 	(or) 	[  10 -eq 10  ]
+ |
+ test  10 -eq 10	(or)	[  10 -eq 20  ]
+ |
+ test 150 -gt 100	(or)    [ 150 -gt 100 ]
+ |
+ test "abc" == "abc"	(or)	[ "abc" == "abc" ]
+ |
+ test "Linux" != "linux"  (or)  [ "Linux" != "linux" ]
+
+ 
+ conditional statement
+ ------------------------
+  -> code block
+  -> testing (or) validation
+  -> if,case
+
+  -> if only; if..else; if..elif 
+
+  Syntax:-
+  ---------
+
+  if<space>test<space>Expression  (or)  [<space>Expression<space>]
+  then
+		True block
+  fi
+
+  if<space>test<space>Expression  (or)  [<space>Expression<space>]
+  then
+	True block
+  else
+	False block
+  fi
+
+ 
+ write a shell script 
+
+ step 1: read a packagename from <STDIN>
+ |
+ step 2: test a input package installed or not
+				|	    |
+				|	  step 3: install a package - Note: user must be a root
+				|	   |
+				|	  step 4: using $? - display installation is done or not
+				|
+			step 3: rpm -qi <packagename>
+			
+
+
+
+ in commandline
+ ----------------
+ root@host~]# rpm -q <packagename>
+
+ root@host~]# rpm -qi <pacagename> / root@host~]# yum -y install <packagename>
+
+
+ read -p "Enter a packagename:" pk
+
+ rpm -q $pk
+ if [ $? -eq 0 ]
+ then
+	echo "Package is already installed"
+	rpm -qi $pk
+ else
+	if [ `whoami` == "root" ]
+	then
+		yum -y install $pk
+		if [ $? -eq 0 ]
+		then
+			echo "Installation is done"
+		else
+			echo "Installation is failed"
+		fi	
+	
+	else
+		echo "Sorry your not root user"
+		exit
+	fi
+ fi
+
+ 
+ rpm -q bash 
+ bash-version-release... <== STDOUT
+
+ rpm -q ksh
+ ksh is not installed <== STDERR
+
+
+ uname				Uname {Enter}
+ Linux <== STDOUT	Vs	Uname not found <==STDERR
+ 
+ 
+ command - STDERR
+    |
+   STDOUT
+
+
+ command >filename # STDOUT
+
+ FD=0 <STDIN> 
+
+ FD=1 STDOUT
+
+ FD=2 STDERR
+
+ command >filename same as  command 1>filename
+				    |
+				   STDOUT
+
+ command 2>errorfile
+	 
+
+
+
+
+
+
+
+
+
+ read -p "Enter a packagename:" pk
+
+ rpm -q $pk >f1.log 2>&1
+ if [ $? -eq 0 ]
+ then
+	echo "Package is already installed"
+	rpm -qi $pk >r1.log 2>&1
+ else
+	if [ `whoami` == "root" ]
+	then
+		yum -y install $pk >>r1.log 2>&1
+		if [ $? -eq 0 ]
+		then
+			echo "Installation is done"
+		else
+			echo "Installation is failed"
+			echo "Refer r1.log file"
+			exit
+		fi	
+	
+	else
+		echo "Sorry your not root user"
+		exit
+	fi
+ fi 
+
+ ---------------------------------------------------------------------------------------------------
+  if..elif style
+  ----------------
+   multiconditional statements
+
+
+ Syntax:-
+ ---------
+ 
+ if<space>[ condition1 ]
+ then
+	True block1
+ elif<space>[ condition2 ]
+ then
+	True block2
+ elif<space>[ condition3 ]
+ then
+	True block3
+  ...
+ else
+	false block
+ fi
+
+ write a shell script:
+
+ read  a shell name from <STDIN>
+ test if input shell is bash => initialize a profile filename is bashrc
+ test if input shell is ksh  => initialize a profile filename is kshrc
+ test if input shell is csh  => initialize a profile filename is cshrc
+  |
+  initialize default shell name is /bin/nologin and profile filename is /etc/profile
+
+ 
+ display - shell name and profile filename
+ -------
+ 
+
+ sh p1.sh		ksh p1.sh	csh p1.sh	bash p1.sh
+ --
+  |
+  |
+ bourneshell(sh)
+
+  root@host~]# chmod +x p1.sh
+  root@host~]# ./p1.sh
+	       -------
+		 |
+		#!/bin/sh
+
+
+ ------------------------------------------------------------------------------------------------------
+
+ Relational operators - single test
+ |
+ |
+ logical operators - more than one test
+ ..................
+	|
+	|__ in single conditional statement - test more than one conditional statements
+					      _________________________________________
+						//use logical operators
+ port number >500 
+
+
+ port number <600
+
+
+	port -gt 500  <Logicaloperator>  port -lt 600
+
+
+ logical and (-a) 
+ 
+ Condition1 	Condition2	Result
+ 
+ True		True		True
+ True		False		False
+ False		True		False
+ False		False		False
+
+
+
+ logical or (-o) 
+ 
+ Condition1 	Condition2	Result
+ 
+ True		True		True
+ True		False		True
+ False		True		True
+ False		False		False
+
+
+ logical not !
+
+ ! [ condition ] 
+     ---------
+	|
+	True  -> ! True =>False
+
+ 	False -> ! False =>True
+
+ 
+
+
+
+ port number >500 
+
+
+ port number <600
+
+
+	port -gt 500 -a port -lt 600
+	____________    ______________
+
+	
+	if [ $port -gt 500 -a $port -lt 600 ]
+	then
+		Trueblock
+	else
+		Falseblock
+	fi
+
+
+ write a shell script
+
+ read a modulename from <STDIN>
+ 
+ test input module name is bluetooth (or) nfs (or) ip_tables 
+
+ any one module name is matched  - display matched module information
+
+
+ lsmod
+ lsmod|grep <modulename>
+
+ modinfo <modulename>  
+
+  |
+ ....
+  |
+ test module is loaded or not
+		 |	    |__if module is not loaded - using modprobe install a module
+		 |		display ack to monitor
+		 |
+		display module info
+	 
+ ---------------------------------------------------------------------------------------------------
+ case  conditional statement
+ ----
+
+case variable in
+ 
+pattern1) pattern1block ;;
+
+pattern2) pattern2block ;;
+ 
+.. 
+patternN)..
+
+*) default action
+esac
+
+
+
+ read -p "enter a service name:" service
+
+ case $service in
+
+ mysqld)  .... ;;
+
+ crond)  crontab -e ;;
+
+ *) 	echo "Sorry given service is not matched"
+ esac
+
+---------------------------------------------------------------------------------------------------------
+
+
+  [[  ]] <==ksh
+
+
+  port=567
+  app="flask"
+
+
+  [ $port -gt 500 -a $port -lt 600  -a  $app == "flask" -o $app == "testApp" ]
+	---------->------------->----------------->------------------
+
+  
+  [ $port -gt 500 -a $port -lt 600 ]  -a  [  $app == "flask" -o $app == "testApp" ] - Error 
+
+
+  [[ $port -gt 500 -a $port -lt 600 ]] && [[ $app == "flask" -o $app == "testApp" ]] - OK
+
+				       ||
+
+  bash --version
+
+  #!/bin/bash  
+
+
+ if [ condition ]		if [ condition ];then
+ then					True block
+	...			else
+ else			Vs		false block
+	...			fi
+ fi		
+  
+  
+ 
+
+
+
+
+
+
+
+
+				
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ 
+
+
+
+
+
+
+
