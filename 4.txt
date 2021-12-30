@@ -1,0 +1,890 @@
+
+ conditional statement
+ ----------------------
+
+ if statement
+ ------------
+	1. if only 
+
+	if<space>[<space>Expression<space>]
+	then
+		True only
+	fi
+
+
+	2. if ..else
+	
+	if<space>[<space>Expression<space>]
+	then
+		True block
+	else
+		False block
+	fi
+
+	3. if..elif 
+	
+	if<space>[<space>Expression<space>]
+	then
+		True block-1
+	elif<space>[<space>Expression<space>]
+	then
+		True block-2
+	elif<space>[<space>Expression<space>]
+	then
+		Trueblock-3
+	..
+	else
+		False block
+	fi
+
+ case statement
+ ---------------
+
+	case value in
+	pattern1)  pattern1 block
+		  ;;
+	pattern2)  pattern2 block
+		  ;;
+	pattern3)  pattern3 block
+		  ;;
+	..
+	patternN)  patternN block
+		  ;;
+	 *)      default block
+	esac
+ 
+
+
+
+
+  if..elif with ==/-eq  ----- case statements
+  --------      ======= 
+
+ Write a shellscript
+
+ test your working kernel name is Linux
+				   |
+				   major version number above 3 ...
+ test your working kernel name is sunos
+				   |
+				   major version number above 5
+
+ test your working kernel distribution is oracle linux
+				   |
+				 test default shell is bash or not?
+
+ case $os in
+ Linux) version=``
+	if [ $version -gt 3 ]
+	then
+		....
+	else
+		....
+	fi
+	;;
+ sunos) version=``
+	if [ $version -gt 5 ]
+	then
+		....
+	else
+		....
+	fi
+	 ;;
+
+ osname) shvar=``
+	 case $shvar
+	 bash) .... ;;
+	 *)  ....
+	 esac
+	  ;;
+ *)   not matched 
+ esac 
+ 
+ -----------------------------------------------------------
+ File Test operators
+ -------------------
+ |_File mode(r;w;x)
+ |       |  
+ |       -r -w -x
+ |
+ |_File Types
+	
+   reg.file	-f
+   directory	-d
+   link		-l (or) -h
+   character	-c
+   block	-b
+   named pipe	-p
+   socket 	-S <== uppercase 
+ 
+   -e <== existing or not
+
+ recap relational/logical
+ ..........................
+
+  [ 10 -gt 5 ]  test 10 -gt 5
+  
+  test<space>filetestOperator<space>inputfile
+		(or)
+
+  [<space>filetestOperator<space>inputfile<space>]							
+
+
+  test - input file is reg.file or not?
+  		       ========    ===
+	
+   [ -f <filename> ];echo $?
+      
+
+  -s -> no.of line is 0 => 1 - 0
+
+
+ write a shell script
+
+ step 1: read a filename from <STDIN>
+ 
+ step 2: test your input file is exists or not
+				  |	    |-->file is not exists
+				  |
+				  test file is reg.file -> ls -l <filename>
+				  |
+				  test file is dir.file -> ls -ld <filename>
+				  |
+				  file <filename>
+	
+ Write a shellscript
+
+ step 1 : read a directory name from <STDIN>
+ step 2 : test input directory is exists or not
+				   |	     |__mkdir <dir>
+				   |		  |
+				ls -ld <dir>	  |->dir is created  
+
+
+
+
+ 
+
+ read -p "enter a pattern:" key
+
+ grep $key <filename>
+		
+
+ if [ $? -ne 0 ];then
+	....
+ fi
+
+   
+ read a filename from <STDIN>
+ test input file is reg.file or not
+			|	|->exit from script 
+			|
+		 read -p "enter a pattern:" key
+		 grep $key <filename>
+		 if [ $? -ne 0 ];then
+			....
+ 		  fi
+
+
+
+ -z variable
+  |
+  test input variable is empty 
+
+ Va=""
+ test -z $Va ;echo $? ->0
+
+ Va="data"
+ test -z $va ;echo $? ->1
+ -------------------------------------------------------------------------------------------
+ conditional statements
+ ----------------------
+ -> code block - execute only one time 
+
+ Looping statements
+  ------------------
+  -> code block - execute more than one time
+     ==========
+	  |_1. Conditional style - based on True(0)/False(non-zero) 
+	  |
+	  |_2. Collection style - based on data(commandresult;filecontent etc.,)
+
+	
+
+  1.Conditional style
+  ====================
+ 
+  while 
+
+  Syntax:-
+  ---------
+  while<space>[  condition ]
+  do
+	code block
+  done
+    
+  Rule 1 - initialization i=0   ( outside code block )			  
+
+  Rule 2 - condition	  $i -lt 5	
+
+  Rule 3 - arithemetic    i=`expr $i + 1` (inside the code block)
+
+
+  i=0
+  while [ $i -lt 5 ]
+  do
+	echo "Hello..$i"
+	i=`expr $i + 1`
+  done
+  
+  Hello..0
+  Hello..1
+  Hello..2
+  Hello..3
+  Hello..4
+ 
+  command >resultfile
+  .......
+  
+  i=0
+  while [ $i -lt 5 ]
+  do
+	echo "Hello..$i"
+	i=`expr $i + 1`
+  done >resultfile
+ 
+
+ while<space>:
+ do
+	always active
+ done
+ 
+	(or)
+
+ while true
+ do
+	always active
+ done
+
+ break - looping keyword - exit from loop ; not exit from script
+
+
+ 
+ while [ $i -lt 10 -a $i -gt 5 ]
+	 --------- == --------
+ 
+ while test $i -lt 5  --- same as -- while [ $i -lt 5 ]
+ 
+ 
+ systemctl enable ab.service 
+
+ ------------------------
+
+ crontab -e
+ 
+ @reboot /root/p137
+
+ --------------------------------------------------------------------------------------------------
+
+
+ until loop - opp.while 
+ -----
+
+ until [ condition ]
+ do
+	..
+ done
+
+
+ while - test the condition - True - code block will execute ...
+			|
+			|__ False - won't execute code block
+
+
+ until - test the condition - True - won't execute code block
+			|
+			|__ False - code block will execute ...
+
+
+ while ! [ condition ]  --- until [   ]
+  
+
+
+  2. Collection style
+  ======================
+  for loop
+
+
+  Syntax:-
+  ----------
+  for  variable in  <collection of items>
+  do
+	code block
+  done
+
+  for var in 10 1.34 10.20.30.40 /etc/passwd "Oracle Linux" 56
+  do
+	echo "var value is:$var"
+  done
+ 
+  var value is:10
+  var value is:1.34
+  var value is:10.20.30.40
+  var value is:/etc/passwd
+  var value is:Oracle Linux
+  var value is:56
+  
+
+  for var in `command`
+  do
+	....
+  done
+
+  break    - exit from loop
+  continue - ignore - continue next statement
+  -------------
+
+ exit					
+ |
+ we can use anywhere in shellscript
+ |
+ exit from script - process(execution of shellscript file) - exit state
+
+	Vs
+
+ break
+ |
+ looping keyword - we can use inside the looping statements 
+ |
+ this is not a command
+
+ -------------------------------------------------------------------------------------------
+
+ while
+ for
+ 
+ select - collection style loop
+ ------
+    |--> menu list
+    |
+    |--> always running
+    |
+    |--> #? <== 
+
+    |---> syntax is like for loop style
+
+ shellscript prompt
+ ...................
+  1. primary prompt	root@host~]#    student@host~]$		echo $PS1
+  2. secondary prompt   echo "line{enter}
+			>					echo $PS2
+			> 
+
+  3. select prompt  #?  
+
+
+  4. debugging prompt +   bash -x filename.sh			echo $PS4
+    
+
+
+ 
+ for var in menu1 menu2 menu3
+ do
+	echo "selected item $var"
+ done
+
+  selected item menu1
+  selected item menu2
+  selected item menu3
+
+		Vs
+
+ select var in menu1 menu2 menu3
+ do
+	echo "selected item $var"
+ done
+  
+ 1)menu1
+ 2)menu2
+ 3)menu3
+ #? 1 {enter}<== user input
+ selected item menu1
+ #? 2 {Enter}
+ selected item menu2  
+ #?
+
+  
+ select + case
+
+
+ select variable in <list of menu items>
+ do
+	case $variable
+	pattern1) ... ;;
+	pattern2) ... ;;
+	..
+	*)  ..
+	esac
+ done
+
+ -
+ operators + conditional + looping 
+		|		|
+	   ----------		|
+	  if       case	    |----------|
+ 			 conditional  collection 
+			  while		for
+			  unit		select
+
+ 
+ ((i+1)) ((i++)) ((++i)) ((i--))
+
+ ((i=0))
+ ((i<5))
+
+ for((i=0;i<5;i++))
+ do
+	....
+ done
+-----------------------------------------------------------------------------------------------------
+
+
+ Write a shell script:
+
+ step 1: initialize a pin number (ex: pin=1234)
+
+ step 2: using while loop - (max: 3times)
+		|
+		|- read  a pin number from <STDIN>
+		|- test  input pin with existing pin (step 1)
+		|  if both pin is matched ->display success ....
+		
+		|  if all 3 attempts failed - pin is blocked
+		
+   |
+   |
+  valid pin and invalid pin - both pin entires write to external log file
+  date/time
+
+  Enter a pin:1234
+ 		
+  Success your pin is valid - 1st time  === append to  FILE
+	
+  Enter a pin:3445 ======================= append to FILE
+  Enter a pin:1234 ======================= append to FILE
+  
+  Success your pin is valid - 2nd time 
+
+
+  Enter a pin:12331  }
+  Enter a pin:23432  }  - appended to FILE
+  Enter a pin:1234   }
+  
+  Success your pin is valid - 3rd time
+ 
+  Enter a pin:12321
+  Enter a pin:233422
+  Enter a pin:2342343
+  -----------------------------------------//append to FILE
+  sorry your pin is blocked
+
+ 
+
+ ------------------------------------------------------------------------------------------------------
+ commandline argument
+ ---------------------
+  |_runtime input (or) non-interactive input ./file.sh <input1> <input2> <input3> .. <inputN>{Enter}
+ 
+  |_positional parameters
+
+  special variables
+  ------------------
+	|_ $1 - 1st argument
+	|_ $2 - 2nd argument
+	|_ $3 - 3rd argument
+	 ..
+	|_ $9 - 9th argument
+		(or)
+	
+	${n}
+	  |-->nth argument
+ 
+
+  echo $1 -- same as -- echo ${1}
+ 
+  ..
+  echo $9  -- same as -- echo ${9}
+
+ 10th argument -> echo ${10}
+ 11th argument -> echo ${11}
+
+ nth argument --->echo ${n}
+ 
+
+ vi p1.sh
+ echo $1 $2 $3
+ echo # empty line
+ echo ${1} ${2} ${3}
+ echo
+ echo ${3} ${1} $2
+ :wq
+
+ chmod a+x p1.sh
+ ./p1.sh p1.c 100KB root 10 20 {enter}
+ ======= ---- ----- ---- -- --
+  |	  |    |     |   |   |
+  |      $1   $2    $3  $4   $5
+  $0
+
+ p1.c 100KB root
+ 
+ p1.c 100KB root
+
+ root p1.c 100KB
+ 
+ ./p1.sh{Enter}
+
+ empty lines
+
+
+
+
+ 
+ vi p1.sh							vi p2.sh
+ echo $1 $2 $3							read fname
+ echo # empty line						read fsize
+ echo ${1} ${2} ${3}				Vs		read fuser
+ echo								echo $fname $fsize $fuser
+ echo ${3} ${1} $2						:wq
+ :wq								
+								chmod a+x p2.sh
+ chmod a+x p1.sh							
+ ./p1.sh p1.c 100KB root 10 20 {enter}				./p2.sh{Enter}
+ ======= ---- ----- ---- -- --					p1.c {enter}<== execution input
+  |	  |    |     |   |   |					100KB {enter}
+  |      $1   $2    $3  $4   $5
+  $0
+
+
+
+ vi ping_test.sh					vi ping_cmd_test.sh
+							
+ read -p "Enter a IPAddress:"  IP			ping -c $1 $2 >$3
+ read -p "Enter a count:" count				
+ read -p "Enter a file:" fname			Vs	:wq
+ 
+ ping -c $count $IP >$fname			  	chmod a+x ping_cmd_test.sh
+ 							
+ :wq
+ chmod a+x ping_test.sh
+ ./ping_test.sh{enter}
+ Enter a IPAddress:127.0.0.1
+ Enter a count:3
+ Enter a file: /var/log/p.log
+
+
+ crontab -e						crontab -e
+					
+ 30 23 * *  * /root/ping_test.sh			30 23	*  *  * /root/ping_cmd_test.sh 3 127.0.0.1 /var/log/p.log
+
+ crond ->shell(bash)-->/root/ping_test.sh
+
+Enter a IPAddress:
+
+ 
+--------------------------------------------------------------------------------------------
+ $# - total no.of arguments  -> ${#}
+ 
+ $@ - list of all   -> ${@}
+ (or)
+ $* - list of all   -> ${*}
+
+ -----------------------------------------------------------------------------------------
+  
+ write a shellscript 
+
+ using commandline argument - test input file is existing or not
+
+ write a shell script
+ 
+ using commandline arguments - pass any two new directories 
+					    ----------------
+ 						|
+						|
+					 ---------------
+					 |		|
+ 		using for loop ls command|		|
+			|
+			copy all dir files  <dir1> -> cp -r old newdir1
+
+			non-dir files	    <dir2> -> cp nondirfile newdir2
+
+			 |
+		using $? - display file copy status message to monitor
+
+ 
+ --------------------------------------------------------------------------------------------------
+
+ array 
+ -----
+   |->variable - holding more than one value - index - mutable(modify)
+
+   Syntax:-
+   ---------
+   Arrayname=(list of items)
+	     
+ 
+   fileinfo=(p1.log ASCII root 15KB rwx)
+		   |	 |    |    |
+	      |    |  |  |  | |  | |   |
+	    0th    |  1st| 2nd| 3rd|  4th index
+
+
+   fileinfo=(p1.log ASCII root 15KB rwx)
+	     ======|=====|====|====|===
+		0  |  1  |  2 |  3 | 4 <== index from LHS ->RHS
+				   |
+	       -5  | -4	 |-3  |-2  | -1 <== index from RHS ->LHS
+
+  How to fetch/get single value from an array?
+
+    ${Array[index]}
+
+  echo ${fileinfo[1]} ->ASCII
+
+  echo ${fileinfo[2]} ->root
+
+  echo ${fileinfo[-1]} ->rwx
+
+  if [ ${fileinfo[0]} == ${fileinfo[-5]} ]
+  then
+	  echo "OK"
+  else
+	  echo "different value"
+  fi			
+
+  $@/$* -> in array =>${arrayname[@]} (or) ${arrayname[*]}
+
+
+  ${#arrayname[@]} (or) ${#arrayname[*]} ->total no.of an array
+
+
+
+  command ->SingleValue => var=`command`
+  |
+  command ->multiple value => var=(`command`)
+
+ -----------------------------------------------------------------------------------------------------
+ 
+   File Handling
+   --------------
+   
+
+ Keyboard(<STDIN>)---------read--------ShellScript----------echo----------Monitor(STDOUT)
+					   |
+					   |
+					Storage(FILE) 
+
+	while loop + redirection symbols <  > >>
+			< - read
+			> - write
+			>> - append
+
+ 1. Reading data from <FILE> -- script --- display to monitor
+  
+Syntax:-
+-------
+	while read var (2)
+	do
+		codeblock (3)
+
+	done<inputfile (1)
+
+
+ 2. script -- to FILE
+	
+	command >file (or) command >>file
+
+	while [  ]
+	do
+			
+	done >file
+
+	for var in ${array[@]}
+	do
+		..
+	done >file
+
+ 3. Reading data from <FILE> - script - create/write data to another FILE
+
+		
+	Syntax:-
+	--------
+	while read var(2)
+	do
+		codeblock(3)
+
+	done<inputfile >resultfile
+		(1)	 (4)
+
+ --------------------------------------------------------------------------------------------
+  Function 
+  --------
+    -> code block
+    -> function definition - action
+    -> function Call - to invoke a definition
+
+  Syntax:-
+  ---------
+ function functionName()
+ {
+	Codeblock	
+ }
+
+  (or)
+
+ functionName()
+ {
+	Codeblock	
+ }
+
+ How to call a function definition?
+
+ functionName
+ 
+ 
+  function call with arguments
+			|
+			using positional parameters - $1 $2 $3.. ${n} $@/$* $#
+						     ---------------------------
+  
+	function display(){
+		echo $1 $2 $3
+		echo $@
+		echo $#
+		echo ${5}
+		for var in $@
+		do
+			....
+		done
+		echo "Exit from $FUNCNAME block"
+	
+	}
+ 
+     display p1.log p2.log p1.java index.html 10.20.30.40
+	     ------ ====== -------  ========  -----------
+
+ file:p1.sh
+ +--------------------------------+
+ |  echo $1 $#
+ |  for var in $@
+ |  do
+ |        ....
+ |  done
+ |
+ |  f1(){
+ |	echo $1 $2
+ |	echo $#
+ |      for var in $@
+ |      do
+ |            ....
+ |      done
+ |  }
+ |  f1 10 20 30 40 50
+ |  echo $2
+ |  echo $3
+ +--------------------------------+
+
+   ./p1.sh F1 F2 F3 F4 F5 F6 F7 F8
+
+ 
+  scope of the variable
+  in shellscript - function inside(definition) - var=value - by default global variable
+
+  functionname(){
+  local variable=value
+ 	--------	
+  }
+
+
+
+  return - function keyword 
+    |
+    |__ exit from function definition
+
+  in shellscript - return <Value>
+			     |_number
+	
+  functionname
+  |
+  $? 
+
+  ./filename <== execution
+
+ 
+ .<space>./filename <== sourcing external file code(function;variable)
+ ...
+ ...
+
+
+  profile files
+  ----------------
+
+
+	Login:____
+	passwd:____
+	|
+	(shell)
+
+ in putty terminal
+
+
+ Login as:root				Login as: student
+ passwd:				passwd: 	
+	    |					|
+	  shell read and execute /etc/profile <== configuration
+				 ------------
+					|
+					personal profile(s)
+					|
+
+ root@host~]#				student@host~]$
+
+  .bashrc				.bashrc
+  .bashlogout				.bashlogout
+  .bashfile				.bashhistory
+
+					student@host~]$ vi .bashrc
+
+					export V=124
+					:wq
+
+					Login as: student
+					passwd:
+					student@host~]$ echo $V ->124
+					|
+					Login as: arun
+					passwd:
+					arun@host~]$ echo $V 
+							   |_undefined variable
+					
+ .profile <== sh
+   |-no entry
+ .bashrc
+
+	
+ vi .bashrc
+ 
+ mysysinfo(){
+	uname -rs
+	whoami
+	id -u
+	df -TH
+	free
+	
+ }
+ export -f mysysinfo
+  	
+ :wq
+ 
+ ====================================================================================================
