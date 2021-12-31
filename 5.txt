@@ -1,0 +1,1004 @@
+ 
+
+ command - shell script
+	   -------------
+		
+ filters + Regx
+ |
+ Heredoc
+ |
+ OL7 -> OL8
+ 
+ unix/linux filters - commands
+ -------------------
+ filterCommand inputfile  (or)  command |filterCommand
+
+ -> read data from <FILE> (or) PIPE
+ -> stores to buffer
+ -> execute the action //on the buffer
+ -> display to monitor
+ 
+ uniq;cut;paste;sort;grep;find;diff;comm;tee;tr;head;tail;more;less;sed;awk
+
+ 
+  cut -c N inputfile
+	 |
+	 Nth char
+
+  cut -c N,M inputfile
+	 | |
+	 Nth char and Mth char (not in range)
+
+  cut -c N-M inputfile
+         ===
+	  |__from Nth char to Mth char 
+
+  cut -d<sep> -f<column> inputfile
+
+ 	      -fN inputfile
+	      -fM inputfile
+	      -fN,M inputfile
+	      -fN-M inputfile
+ -----------------------------------------------------------
+
+ paste - merge multiple file into single
+
+ paste file1 file2 ... fileN
+
+ <file1>  <file2>  <fileN>
+
+ 
+
+ paste -s file1 file2 >newfile
+ 
+ paste  file1 file2 >newfile
+
+ paste -d"sep" file1 file2 >newfile
+
+ -------------------------------------------------------------
+ sort 
+ ----
+   |-->sorted order 
+
+ sort filename -> a-z 
+
+ sort -r filename -> z-a
+
+ sort -n filename -> 0-9
+
+ sort -nr filename ->9-0
+
+ sort -t<sep> -k<filedValue> filename
+
+ sort -t<sep> -nk<filevalue> filename
+
+ sort -t<sep> -nrk<filevalue> filename
+
+ ls -l|sort -nk5
+ ls -l|sort -nrk 5
+ --------------------------------------------------------
+ from /etc/passwd file
+		
+    |__filter list of usernames - ascending order
+    |__filter list of usrename and userID
+    
+ ls -l <directory> - display list of files size from largest to small size
+ 
+ df -Th - filter - used/availabe .. largest to lowest size
+
+ ---------------------------------------------------------
+ 
+  uniq - omitt duplicate lines
+ 
+  uniq -i (ignore case)
+
+ 
+ sort|uniq 
+ sort|uniq|wc -l
+ 
+ ----------------------------------------------------------
+ grep - searching patter from <file> (or) PIPE
+
+ grep -option pattern inputfile(s)
+ 
+ pattern - text (or) string
+ |
+ action - display
+
+ 
+  -n - display matched pattern line number
+  -i - ignoring pattern case 
+  -c - count (matched pattern count)
+  -v - not matching pattern
+  
+  -l - list matched pattern filename only
+
+  -e (or) -E (or) egrep "pattern1|pattern2|..pattern"
+
+  -f (pattern file)
+
+  -w - word based 
+
+  -R <pattern> <directory>
+ 
+  -q - quit mode
+  
+  
+----------------------------------------------------------------
+ find - search a file/directory
+ ----
+
+ Syntax:-
+ --------
+ find <searchpath> -name <searchfile>
+	|
+	|
+	recursive search
+
+
+ root@host day5]# pwd
+ /root/Linux/Training/day5
+
+ root@host day5]# find . -name p1.sh
+ ./p1.sh
+
+ root@host day5]# find /root/Linux -name p1.sh
+ /root/Linux/p1.sh
+ /root/Linux/Day1/p1.sh
+ /root/Linux/Day2/p1.sh
+ /root/Linux/Day3/p1.sh
+ /root/Linux/Day4/p1.sh
+ /root/Linux/Day4/L1/p1.sh
+ /root/Linux/Day4/L1/L2/p1.sh
+ /root/Linux/Day5/p1.sh 
+
+
+
+  find . -name "*.sh"
+	        ----
+ 
+  find . -iname emp.csv
+
+  ./emp.csv
+  ./EMp.csv
+  ./EMP.csv
+ 	
+
+	  /
+ 	  |
+	  -----------------
+	  |		|
+	  /root		/home
+			    |__ userA/project/module/file1 file2
+			    |			|_D1/D2/D3/D4/file1
+			    |__ userB/
+			    |
+			    |__ userC
+  
+
+
+	userA@host~]$ find . -name file1
+		  |	   |
+		  |
+		/home/userA/
+			..
+			..
+		
+	-maxdepth
+	-mindepth
+			
+
+	-name <filename>
+	-type <filetest operator flag>
+
+	-type f <== search all the reg.file
+	-type d <== directory file
+	-type c <== char type device 
+	 ..
+	-perm -u=<>
+	      -g=<>
+	
+	modify - write
+	access - read 
+	change - change the permission
+	
+ 
+	find ......
+		|
+		....
+		....
+	xargs
+	......
+	|
+	multiple line data -> single line
+
+	
+	find ... | xagrs <filemanipulation command>
+	________   _________________________________
+				
+	P1	 |	P2
+	
+	
+	-exec
+
+	P1 - 0x4444
+	|
+	P2 - 0x1234
+	|
+	COW - memory 
+	
+	unix ->vfork()
+
+	Linux ->exec() --- exec 
+
+	{ }
+
+	file1
+	file2
+	file3
+
+	file1 file2 file3
+
+	file1\
+	file2\
+	file3
+	---------> file1 file2 file
+
+
+	find <search>... -exec <filemanipulationCommand> {} \;
+------------------------------------------------------------------------------------------------
+
+	 cgroup ->OL[78]
+	 ......
+	   |_slice
+		|-->user	- process - file 
+		|-->system	...
+	
+	cgroup - commands
+
+ ----------------------------------------------------------------------------------
+ diff 
+ -----
+ diff file1 file2
+
+ NcN
+ | |__2nd input file line number
+ |
+ 1st file line number
+ 
+ 2c2
+ | |
+
+ 2,5c2
+ --   
+  |
+  |
+ from 2nd line to 5th line
+ 
+
+
+ comm file1 file2
+
+  -12
+  -13
+  -23
+  
+ ---------------------------------------------------------------------------------------------------
+
+ root@host~]# command >newfile  - redirection
+  
+ root@host~]#
+
+ root@host~]# command |tee newfile 
+		       ---
+			|->create a file - write command result to external file
+			|
+			|->duplicate to monitor (or) display to monitor   
+  
+
+ command >>file - append 
+
+ command |tee -a filename 
+	       |
+	       |__append 
+
+
+ ------------------------------------------------------------------------------------------------
+ 
+ tr - character by character - replacement
+
+ tr 'Source' 'target' < inputfile
+	|	|
+
+ command | tr 'source' 'target'
+	 
+
+ 'a-z' 'A-Z'
+ 'A-Z' 'a-z'
+
+ '0-9' 'a-z'
+  ---   ---
+   |     |
+  10     ...
+
+  
+ 'abc'  'abcdef' 
+  |||	 |  ---
+   
+ -----------------------------------------------------------------------------------------------
+ head ;tail;more;less
+ --------------------//view the command result;filecontent
+
+ head - from top to bottom  - 10 lines 
+	-------------------
+
+ head /etc/passwd {Enter}
+
+ ps -e|head 
+
+ lsmod|head
+
+ ls -l |sort -nrk 5|head <== top 10 largest file size
+
+ 
+ tail - from bottom to top - 10 lines
+ 
+ tail /etc/passwd {Enter}
+ 
+ tail -n 3 /etc/passwd {Enter}
+
+ tail -n 3 /var/log/auth.log 
+
+ command|more
+ 
+ q - quit
+ command|less <== pageUp PageDown Home End
+
+ q - quit
+  
+
+------------------------------------------------------------------------------------------------------
+ 
+ grep 
+ sed
+ awk
+ 
+ Regular expression
+ ------------------
+  |
+  |__search the pattern - specific 
+
+ root@host~]# ls {Enter}
+		
+ p1.sh p2.java test.log index.html L1 L2
+
+ root@host~]# ls *.log {Enter}
+		 -----
+ test.log
+
+
+ grep sales emp.csv
+
+ 101,raj,sales,pune,1000
+ sales,vijay
+ sales,anu,2445
+ arun,sales
+ sales,
+ sales 
+
+  Regx chars
+  -----------
+	|
+	|
+  -----------------
+  |		   |
+ BasicRegX(BRE)	  Extended Regx(ERE) - grep -E
+ - single pattern  - multiple pattern 
+
+ ^				|  - like logical or  - any one pattern is matched - True
+ 				() - like logical and - both pattern should match - True
+ grep ^pattern			+
+      ---------			{}
+
+ grep ^sales emp.csv
+   
+ sales,vijay
+ sales,anu,2445
+ sales,
+ sales 
+  
+ $ 
+ 
+ grep pattern$ 
+
+ grep sales$ emp.csv
+ arun,sales
+ sales
+ 
+ grep " "$ file 
+      ====
+	|__ends with space
+
+  grep ^" " file
+       ----
+	 |__starts with space
+
+  
+  grep ^pattern$ file
+        -------
+	 |
+	pattern only
+
+ .(dot) - match any single character - except \n   
+
+
+  ^pattern
+
+  pattern$
+
+  .* - list of all
+
+  charcter based search
+  ---------------------
+	|__ filter character based  []<== 1 char
+	|
+	|__ validation/test - input validation   
+  
+   [Aav]run
+   ----------->Arun arun vrun
+
+   [Aa][Rr]un
+   ------------> ARun Arun aRun arun
+
+   [a-z]
+   [A-Z]
+   [a-zA-Z]
+   [0-9]
+   [a-zA-Z0-9]
+   
+      
+   ^[A-Z][a-z][a-z][a-z][0-9][0-9]$
+    =====---------------==========
+
+
+  
+  read -p "Enter any two digits:" n
+ 
+  Enter any two digits: 
+
+  echo $n|grep -q "^[0-9][0-9]$"	
+		
+  if [ $? -eq 0 ];then
+	echo "Valid format"
+	expr $n + 100
+  else
+	echo "Invalid format"
+  fi
+
+  ^[A-Z][a-z][a-z][0-9]$
+   --------------------
+  
+
+   ^[a-z] - line starts with any single lower case chars
+
+   [a-z]$ - line ends with any single lowercase chars
+
+   [a5t] -> anywhere char 'a' 't' '5' - matched 
+
+    ^[a5t] ->line starts with a 
+			      t
+			      5
+			      ---
+
+     [^a5t] -> Not matching char 'a' 't' '5'
+
+     [^a-z] - not matching any lowercase 
+
+     [^a-zA-Z] - not matching any alpha 
+
+     [^0-9] - not matching any digits
+
+	[^a-zA-Z0-9] - matching space and special chars
+
+
+     
+character class 		posix class
+ 
+  [a-z]				[[:lower:]]
+
+  [A-Z]				[[:upper:]]
+
+  [a-zA-Z]			[[:alpha:]]
+
+  [0-9]				[[:digit:]]
+
+  [a-zA-Z0-9]			[[:alnum:]]
+
+  ' '				[[:space:]]
+
+  [^a-zA-Z0-9]			[[:punct:]]	
+ 
+
+
+  enter a url
+
+  starts with http (or) https followed any name ends with org or com
+
+  ^http|https.*com$|org$
+  ----- =========== ----
+
+
+   ftp://abc.org - matched 
+
+   http://www.abc.co.in - matched 
+
+  
+  ^(http|https).*(com|org)$
+   =======================  
+
+   ftp://abc.org - Not-matched 
+
+   http://www.abc.co.in - Not-matched 
+
+	
+   <pattern>+
+   ---------
+	|-> 1 or more 
+	
+	ab+c ->abc abbbbbbbbbbbbbbbbbbbbbbbbbbbbc //matched
+	
+	abbbbbbbbbbbbb,bbbbbbbbbbbbbbbbbbbc //Not-matched 
+
+  ^[A-Z][a-z]+$
+
+   read -p "Enter an emp name in title case format:" name
+   
+   echo $name|grep -qE "^[A-Z][a-z]+$"
+  
+   if [ $? -ne 0 ];then
+	echo "Invalid format"
+   fi
+
+   ^[[:space:]]+[0-9]
+
+   {}
+   -- range 
+
+  <pattern>{n} - n times
+
+  ab{2}c -->abbc 
+
+  <pattern>{n,} - minimum n times- maximum more
+
+  ab{2,}c -> abbc abbbbbbbbbbbbbbbbbbbbbbbbbc
+
+ ab+c --- same as ab{1,}c 
+  --
+  <pattern>{n,m} - minimum n times - maximum m times
+
+  ab{2,4}c  -->abbc abbbc abbbbc //matched
+
+	abc abbbbbc //not-matched 
+------------------------------------------------------------------------------------------------------
+ 
+ grep 
+ ----
+ grep -option pattern inputfile
+
+ pattern - string (or) text
+ 
+ action - print (or) display 
+
+
+ sed
+ ---
+ sed -option 'patternAction' inputfile
+
+ pattern
+ --------
+	1.Line Number (or) address	-> print 3rd line content from /etc/passwd
+					   ----- ===
+						sed -option "3p" /etc/passwd
+	2.string (or) text
+					-> print bash keyword from /etc/passwd
+					   ----- ====	
+						sed -option '/bash/p' /etc/passwd -- same as -- grep bash /etc/passwd
+
+ action	
+ ------	
+ print(p) write(w) delete(d) substitue(s) change(c) execute(e) 
+
+
+ sed internal
+ --------------
+ read - read the data from <FILE> (or) PIPE
+ |
+ stores - stores to buffer
+ |
+ execute - execute sed command on the buffer (pattern buffer)
+ |
+ display - display sed command result to monitor
+  
+
+  sed options
+  -----------
+  -n - print(p) ; write(w)
+  
+  -r - ERE ( | () + {} )
+
+  -e - like grep -e 
+
+ Line number based filter
+ ------------------------
+ print action
+ --------------
+ print Nth line -> sed -n 'Np' inputfile
+
+ print Nth to Mth line -> sed -n 'N,Mp' inputfile
+
+ print Nth , Mth line (not range) -> sed -n  -e 'Np' -e 'Mp' inputfile
+ 
+
+ write action
+ -------------
+
+ sed -n '3p' emp.csv >r1
+
+ sed -n '3w r1' emp.csv 
+        
+ write 3rd line and 5thline  -> sed -n '3,5w result' emp.csv
+
+ write 3rd line to 5th line  -> sed -n -e '3w f1' -e '5w f2' emp.csv
+
+
+ delete action
+ --------------
+ opp.of print action 
+
+ print 3rd line -> print 3rd line content
+ |
+ delete 3rd line -> delete 3rd line content - display remaining lines 
+
+ in sed - last line number -> $ use single quote ''
+
+ print last line data -> sed -n '$p' /etc/passwd
+
+ write last line data -> sed -n '$w file' /etc/passwd
+ 
+ delete last line data -> sed '$d' /etc/passwd
+			      ----
+
+ 
+ change(c)
+ ---------
+ sed '3c <newText>'  inputfile
+
+ execute(e)
+ ----------
+ |_sed - execute shellcommand
+ 
+
+--------------------------------------------------------------------------------------------------
+ 
+ text pattern
+ -------------
+ sed -option '/pattern/Action'  inputfile
+		Regx   pwdc
+
+
+ print 3rd line -> sed -n '3p'
+
+ print bash     -> sed -n '/bash/p'
+
+ delete bash    -> sed '/bash/d'
+ 
+ write 3rd line ---> sed -n '3w newfile' 
+ |
+ write bash 	---> sed -n '/bash/w newfile'
+
+ change 3rd line -> sed '3c <replacedtext>' 
+ |
+ change bash	 -> sed '/bash/c <replacenewtext>' 
+
+ N -> /pattern/
+ 
+
+ '/pattern1/,/patternN/Action'
+  .........  .........
+ 
+ from date  to date from log file
+ 
+ --------------------------------------------------------------------------------------------------
+ sed substitute(s)
+ ------------------
+ Syntax:-
+ ---------
+ sed 's/oldpattern/newpattern/' inputfile
+  
+ conditional based substitue
+  |
+  |
+ sed 'Ns/oldpattern/newpattern/' 
+      |  ---------- ---------
+      |
+    Nth line
+
+ sed '/pattern/s/oldpattern/newpattern/'
+       -------   ---------- ----------
+
+  
+----------------------------------------------------------------------------------------------------
+   ^$ - match the empty line
+
+ delete the emptyline -> sed '/^$/d' inputfile same as -> grep -v "^$" inputfile
+ ------
+ 
+ sed 's/sales/****/' emp.csv # there is no changes in emp.csv file
+
+
+ cp emp.csv backup_emp.csv
+
+ sed -i 's/sales/****/' emp.csv # won't display result to monitor
+
+ -------------------------------------------------------------------------------------------------- 
+ 
+ grep - searching only 
+ ----
+ grep -option pattern inputfile
+
+ pattern: text (or) string
+ action : print (or) display
+
+ sed
+ ---
+ sed -option 'patternAction' inputfile
+
+ pattern
+ --------
+	1.Line Number (or) address	-> print 3rd line content from /etc/passwd
+					   ----- ===
+						sed -option "3p" /etc/passwd
+	2.string (or) text
+					-> print bash keyword from /etc/passwd
+					   ----- ====	
+						sed -option '/bash/p' /etc/passwd -- same as -- grep bash /etc/passwd
+
+ action	
+ ------	
+ print(p) write(w) delete(d) substitue(s) change(c) execute(e) 
+
+ awk - search + format
+ ----
+ awk -option '/pattern/{Action}' inputfile
+
+ pattern: text (or) string
+ action : print 
+
+
+ read - data from file (or) pipe
+ |
+ split - each line into multiple fields - based on -F (default fsep is space)
+ |
+ search
+ |
+ action - print
+
+ IP
+ --
+ 101:userA:bash
+ 102:userB:ksh
+ 103:userC:bash
+
+ 
+ awk -F: '/bash/{print}' IP
+
+
+ 1  101:userA:bash
+ ------------------
+ 2  102:userB:ksh
+ ------------------
+ 3  103:userC:bash
+
+		
+ NR  $1  $2    $NF
+ 1  101|userA|bash
+ ------|-----|-----
+ 2  102|userB|ksh
+ ------|-----|-----
+ 3  103|userC|bash
+   |-----$0-------|
+
+
+ NR
+ $1 $2 .. $NF
+ $0
+ OFS - output field sep
+ FS - input field sep
+ ORS - output record sep } 
+ RS - input record sep   } \n
+
+ default Input field sep,output sep is space
+
+ awk script (filename.sh)
+ -----------
+ |
+ |_BEGIN{initialization} - preprocessing section - not depends on input(file;pipe)
+ 
+  /pattern/{Action} <-----
+  ...			 | Body - depends on the input(file;pipe)
+ /pattern/{Action}  <-----
+
+  END{initialization}  - post process section - not depends on input; depends on the body section 
+ 
+
+ cat file
+ data1\n
+ data2\n
+ data3\n
+      ---
+
+ ----------------------------------------------------------------------------------------------------
+ 
+ Heredoc (or) Line oriented docs
+ ---------------------------------
+ command <<Flag
+	...
+	...
+	...
+	...
+ Flag
+
+ python<<Abc
+  python code
+ Abc
+
+
+ var=`python<<Abc
+   pythonCode
+ Abc`
+
+   root@host~]# mysql -u root -p .... {enter}
+
+
+  mysql -u root -p .. <<abc
+	DBQuery
+ 
+  abc
+  
+
+  r=`mysql -u root -p <<abc
+  use DEMO
+  select *from table
+  abc`
+ 
+ if [ -z "$r" ]
+ then
+	echo "Empty records"
+ else
+	echo "$r"|awk '{OFS.....}'
+ fi
+
+  
+ host02
+ -------
+ root@host02~]# fdisk -l # to list out partition table
+
+ root@host02~]# fdisk /dev/xvdb {Enter}
+
+ p {enter}
+ n {enter}
+ +2G
+ n
+ p
+ +3G
+ w
+ ---------//fdisk 
+
+ if [ `whoami` == "root" ]
+ then
+
+ fdisk /dev/xvdb<<abc
+  p
+  n
+ +2G
+  n
+  p
+ +3G
+  w
+ abc
+
+ fdisk -l |grep xvdb
+
+ cat /proc/partitions|grep xvdb
+ 
+ 
+ install webserver -> webserver -> /var/www/cgi-bin/
+
+ httpd.conf
+
+ Script Alias /cgi-bin/   /var/www/cgi-bin/
+ 
+ :wq
+
+ systemctl status httpd
+ systemctl restat httpd
+
+ vi /var/www/cgi-bin/p1.sh {Enter}
+
+ #!/bin/bash
+ echo "Content-type:text/html\n"
+ 
+ echo "<h1>Welcome to CGI appln</h1>"
+ echo "<h2><font color=red>`uptime`</font></h2>"
+
+ :wq
+ root@host~]# chmod a+x /var/www/cgi-bin/p1.sh
+ root@host~]# /var/www/cgi-bin/p1.sh
+
+ <h1>Welcome to CGI appln</h1>
+ <h2><font color=red>uptime cmd result</font>
+
+ 
+ open a broswer -> 127.0.0.1/cgi-bin/p1.sh 
+
+command<<EOF			<<EOF
+   ....				....
+   ....			Vs	multiline comment
+   ....				EOF
+EOF	
+----------------------------------------------------------------------------------------------------
+  OL7 -> OL8
+
+  leapp utility - framework 
+
+ 1st disable bootmanager -> bootctl status 
+
+ yum install leapp --enablerepo=<repoID>,<repoID>
+ 
+ [Appln]  
+  |
+ pam ->[ auth	------ CtrlFlag ->sufficient  module(.so)
+	 password		->requisite - if failed - there is no action (deny.so)  
+	 account		->required 
+
+ su
+ auth  sufficient  pam_deny.so 	student@host~]$ su -
+	 |			password:
+	 |			
+       requiste   pam_deny.so   student@host~]$ su -
+				authenticationfailure
+
+
+	[userA] [userB] [userC] [userD]
+
+	[userA][userB]	[userC] [userD]
+	--------------  ----------------
+	|			|_pam_deny.so <==requisite
+	su -
+	root
+  	|
+	required pam_wheel.so
+
+	usermod -g wheel userA
+	usermod -g wheel userB 
+
+  	userA@host~]$ su -		userD@host~]$ su -
+	root@host~]# 			error 
+
+			
+                   
+  bootloader -> /boot/grub2/grub.cfg 
+				
+		/etc/default/grub
+
+  
+ filesystem 	-> /etc/fstab
+			-----
+			  |__automounting
+
+ network -> /etc/sysconfig/network-scripts/ifcf-*
+	    /etc/hosts
+ 
+ strace 
+
+ --------------------------------------------------------------------------------------------------------
